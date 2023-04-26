@@ -54,17 +54,17 @@ async def get_Company_detail(company_id: UUID, db: Session = Depends(get_db_cont
 
 
 @router.put("/{company_id}")
-async def update_Company(company_id: UUID, request: CompanyUpdateModel, db: Session = Depends(get_db_context)) -> CompanyViewModel:
+async def update_company(company_id: UUID, request: CompanyUpdateModel, db: Session = Depends(get_db_context)) -> CompanyViewModel:
     company = db.query(Company).filter(Company.id == company_id).first()
     if company is None:
         raise HTTPException(status_code=404, detail="Item not found")
-    if company.name is not None:
+    if request.name is not None:
         company.name = request.name
-    if company.description is not None:
+    if request.description is not None:
         company.description = request.description
-    if company.mode is not None:
+    if request.mode is not None:
         company.mode = request.mode
-    if company.rating is not None:
+    if request.rating is not None:
         company.rating = request.rating
     company.updated_at = datetime.utcnow()
     db.add(company)

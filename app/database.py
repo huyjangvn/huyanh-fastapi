@@ -20,5 +20,5 @@ engine = create_engine(
 metadata = MetaData()
 # metadata.bind = engine
 
-metadata = Task.metadata
+metadata = User.metadata
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

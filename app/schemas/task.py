@@ -1,4 +1,3 @@
-import uuid
 from sqlalchemy import Column, String, Integer, Enum, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from .base_entity import BaseEntity, Base, TaskStatus

@@ -26,9 +26,10 @@ class UserCreateModel(BaseModel):
     username: str
     first_name: str
     last_name: str
-    is_active: bool
-    is_admin: bool
-    company_id: str
+    is_active: Optional[bool] = True
+    is_admin: Optional[bool] = False
+    company_id: Optional[str] = None
+    password: str
 
 
 class UserUpdateModel(BaseModel):
@@ -39,3 +40,4 @@ class UserUpdateModel(BaseModel):
     is_active: Optional[bool] = None
     is_admin: Optional[bool] = None
     company_id: Optional[str] = None
+    password: Optional[str] = None

@@ -15,7 +15,7 @@ class User(Base, BaseEntity):
     last_name = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    company_id = Column(Uuid, ForeignKey('company.id'))
+    company_id = Column(Uuid, ForeignKey('company.id'), nullable=True)
     email = Column(String(50), unique=True)
     hashed_password = Column(String(255))
 
