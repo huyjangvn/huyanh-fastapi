@@ -9,6 +9,7 @@ from database import get_db_context
 from schemas import User, Company
 from models import UserViewModel, UserCreateModel, UserUpdateModel
 from schemas.user import get_password_hash
+from services.auth import token_interceptor
 router = APIRouter(prefix="/users", tags=["User"])
 
 
@@ -35,20 +36,16 @@ async def create_user(request: UserCreateModel, db: Session = Depends(get_db_con
     db.add(user)
     db.commit()
 
-    email: Optional[str] = None
-    username: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    is_active: Optional[bool] = None
-    is_admin: Optional[bool] = None
-    company_id: Optional[str] = None
-
 
 @router.put("/{user_id}")
-async def update_user(user_id: UUID, request: UserUpdateModel, db: Session = Depends(get_db_context)) -> UserViewModel:
+async def update_user(user_id: UUID, request: UserUpdateModel, db: Session = Depends(get_db_context),
+                      logged_in_user: User = Depends(token_interceptor)) -> UserViewModel:
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    # only allow non-admin user to update their own profile
+    if logged_in_user.id != user.id and logged_in_user.is_admin == False:
+        raise HTTPException(status_code=403, detail="Forbidden")
     if request.email is not None:
         user.email = request.email
     if request.username is not None:
@@ -60,6 +57,8 @@ async def update_user(user_id: UUID, request: UserUpdateModel, db: Session = Dep
     if request.is_active is not None:
         user.is_active = request.is_active
     if request.is_admin is not None:  # todo: check if user is admin before updating
+        if logged_in_user.is_admin is False:
+            raise HTTPException(status_code=403, detail="Forbidden")
         user.is_admin = request.is_admin
     if request.company_id is not None:  # todo: check if company exists
         company = db.query(Company).get(request.company_id)

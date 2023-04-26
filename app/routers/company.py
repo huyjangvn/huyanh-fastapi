@@ -3,10 +3,10 @@ from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session, joinedload
-# from services.auth import token_interceptor
+from services.auth import token_interceptor
 from database import get_db_context
 
-from schemas import Company
+from schemas import Company, User
 from models import CompanyCreateModel, CompanyViewModel, CompanyUpdateModel
 
 router = APIRouter(prefix="/companies", tags=["Company"])
@@ -18,13 +18,13 @@ async def get_all_companies(
         mode: bool = Query(default=None),
         page: int = Query(ge=1, default=1),
         size: int = Query(ge=1, le=50, default=10),
-        # user: User = Depends(token_interceptor),
+        user: User = Depends(token_interceptor),
         db: Session = Depends(get_db_context)
 ) -> List[CompanyViewModel]:
-    # if not user.is_admin:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_403_FORBIDDEN,
-    #         detail="Access denied")
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied")
 
     # Default of joinedload is LEFT OUTER JOIN
     query = db.query(Company)
