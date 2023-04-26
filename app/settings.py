@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def get_connection_string():
     engine = os.environ.get("DB_ENGINE")
     dbhost = os.environ.get("DB_HOST")
@@ -11,9 +12,11 @@ def get_connection_string():
     dbname = os.environ.get("DB_NAME")
     return f"{engine}://{username}:{password}@{dbhost}/{dbname}"
 
+
 # Database Setting
 SQLALCHEMY_DATABASE_URL = get_connection_string()
 ADMIN_DEFAULT_PASSWORD = os.environ.get("DEFAULT_PASSWORD")
+USER_DEFAULT_PASSWORD = os.environ.get("USER_DEFAULT_PASSWORD")
 
 # JWT Setting
 JWT_SECRET = os.environ.get("JWT_SECRET")

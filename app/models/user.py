@@ -13,7 +13,7 @@ class UserViewModel(BaseModel):
     last_name: str
     is_active: bool
     is_admin: bool
-    company_id: Optional[str] = None
+    company_id: Optional[UUID] = None
     # company: Optional[CompanyViewModel] = None
     # tasks: Optional[list[TaskViewModel]] = None
 

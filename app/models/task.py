@@ -7,7 +7,7 @@ from datetime import datetime
 
 class TaskViewModel(BaseModel):
     id: UUID
-    user_id: str
+    user_id: UUID
     summary: str
     description: str
     status: str
